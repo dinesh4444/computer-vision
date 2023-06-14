@@ -116,7 +116,7 @@
     cap.release()
     cv2.destroyAllWindows()
 
-## Lines, shape, figures
+## 4. Lines, shape, figures
 
     import cv2
     import numpy as np
@@ -159,7 +159,7 @@ cv2.circle(canvas, (250,250), 10, (255,0,0), 3)
     cv2.imshow('output', canvas)
     cv2.waitKey()
 
-## Fonts of opencv
+## 5. Fonts of opencv
 
     import cv2
     import numpy as np
@@ -189,7 +189,7 @@ cv2.circle(canvas, (250,250), 10, (255,0,0), 3)
     cv2.imshow('fonts', canvas)
     cv2.waitKey(0)
 
-## Rotation, Translaion, Scaling
+## 6. Rotation, Translaion, Scaling
 
 - An Optical Zoom means moving the zoom lens so that it increases the magnification of light before it even reaches the digital sensor.
 - A Digital Zoom is not really zoom, it is simply interpolating the image after it has been acquired at the sensor (pixilation process).
@@ -204,59 +204,57 @@ cv2.circle(canvas, (250,250), 10, (255,0,0), 3)
 - 4. Nearest neighbor interpolation
 - 5. cynocidal interpolation
 
+#### Linear and Cubic Interpolation
+
     import cv2
     import numpy as np
 
     # scaling operation
-    # Reading original image
-
+    #cReading original image
     image = cv2.imread('nature.png')
-
     image_sized = cv2.resize(image, (200,200))
 
     # resizing the image using linear interpolation
-
     image_resized = cv2.resize(image, None, fx=1.1, fy=1.1, interpolation=cv2.INTER_LINEAR)
 
     # Resizing the image using cubic interpolation
-
     image_re_cube = cv2.resize(image, None, fx=1.1, fy=1.1, interpolation=cv2.INTER_CUBIC)
 
-    # showing all three images
-
+    #showing all three images
     cv2.imshow('Linear', image_resized)
     cv2.imshow('Cubic', image_re_cube)
     cv2.imshow('sized', image_sized)
     cv2.imshow('Original', image)
-
     if (cv2.waitKey() == ord('q')):
         cv2.destroyAllWindows()
 
-## Image Translation
+#### Image Translation
+
 - Shit an image in coordinate space by adding a specified value to the X and Y coordinates.
 - Translation matrix(M)
 - Apply M to image
 
+
+
     import cv2
     import numpy as np
 
-    # loading image 
+    #loading image
     image = cv2.imread('nature.png')
 
     #resizing image
     image = cv2.resize(image, (450,450))
 
-    # translation matrix
+    #translation matrix
     matrix = np.float32([[1,0,100],[0,1,100]])
 
-    # applying the matrix to the image
+    #applying the matrix to the image
     trnslated = cv2.warpAffine(image, matrix, (image.shape[1]+100, image.shape[0]+100))
-
-    # showing the image
+    #showing the image
     cv2.imshow('translation',trnslated)
     cv2.waitKey(0)
 
-## Transformation
+## 7.Transformation
 
 #### What is Geometric transformation?
 - Modify Spatial Relationship between pixels.
@@ -265,6 +263,7 @@ cv2.circle(canvas, (250,250), 10, (255,0,0), 3)
 #### 1. Euclidean or Isometric transformation
 - whenever an image is shifted in x and y-axis, or rotate in pericular pixel.
 - It has three degree of freedom.
+
 #### Charecteristics:
 - Distance remains preserved
 - Angles remain preserved
@@ -274,3 +273,161 @@ cv2.circle(canvas, (250,250), 10, (255,0,0), 3)
 - Has six degree of freedom , two for translation, one for rotation, one for scaling, one for scaling direction, and one for scaling ratio.
 - The matrix can be rotated, translated, scaled, sheared.
 - Parallel lines preserved but may be sheared. Square may become parallelogram.
+
+#### 3. Projective Transformation
+- In the projective transform, you change the projection of image.
+
+## 8. Convolution and Filtering
+- Convolution is a fundamental operation in image processing. We basically apply a mathematical operator to each pixel and change its value in some way. To apply this mathematical operator, we use another matrix called kernel.
+- The kernel is fixed with its center on each pixel, and corresponding pixel are multiplied. The pixel values is replaced with sum of all multiplication.
+- The kernel is called the "image filter" and the process of applying this kernel to the given image is called "image filtering". The output obtained after applying the kernel to the image is called the "filtering image".
+
+### High pass and Lowpass filter
+- What is frequency in Image?
+- Frequency refers to the rate of change of pixel values. So we can say that the sharp edges would be high frequency contact because the pixel values change rapidly in that region. Going by that logic, Plain areas would be low frequency content.
+#### Low pass filter
+- Low pass filter is the type of frequency domain filter that attenuate the high frequency components and preserves the low frequency components.
+#### High pass filter
+- High pass filter is the type of frequency domain filter that attenuate the low frequency components and preserves the high frequency components.
+
+#### Application of filtering
+- Note: Remeber normalising filters before applying to image for stable results.
+    output = cv2.filter2D(src, ddepth, kernel, anchor, border_type)
+
+    import cv2                                               # importing the module
+    import numpy as np 
+    img = cv2.imread('nature.png')                          # import the image
+    kernel_identity = np.array([[0,0,0],[0,1,0],[0,0,0]])      # Form thr filters
+    kernel_3 = np.ones((3,3), dtype=np.float32) / 9.0
+    kernel_11 = np.ones((11,11), dtype=np.float32) / 121.0     # apply the filter
+    output_1 = cv2.filter2D(img, -1, kernel_identity)
+    output_2 = cv2.filter2D(img, -1, kernel_3)
+    output_3 = cv2.filter2D(img, -1, kernel_11) 
+    cv2.imshow('same', output_1)         # show the image
+    cv2.imshow('3 blur', output_2)
+    cv2.imshow('11 blur', output_3)
+    cv2.waitKey(0)
+
+--------------------------------------------------------------------------------------------------
+
+## Edge Detection
+
+- The process of detection involves detecting sharp edges in the image and producing a binary image as the output. Typically, we draw white lines on a black background to indicate those edges.
+
+#### Types of edge setection
+- Sobel Edge filters (Sobal x and Sobal Y)
+- Scharr edge Filters
+- Laplacian Filters
+
+#### Sobel Edge Filter
+- The sobel operator computes an approximation od the gradient of an image intensity function. it depends on first order derivatives.
+- Demerits : signal to noise ratio, not accurate results and discontinuity.
+    cv2.Sobel(src, dst, ddepth, dx, dy)
+
+#### Scharr Edhe Filter
+- The scharr operator is belived to give better results than sobel. the scharr operator is dependent on first order derivatives.
+    cv2.Scharr(src, dst, ddepth, dx, dy)
+
+#### Laplacian Filter
+- Laplacian operator is also a derivative operator which is used to find edges in an image.
+- The major difference between Laplacian and other operators like Prewitt, Sobel, Robinson and Kirsch is that these all are first order derivative masks but Laplacian is a second order derivative mask.
+    cv2.Laplacian(src_gray, ddepth, ksize=kernel_size)
+
+-------------------------------------------------------------------------------------------------
+
+## Canny Edge detection
+#### Steges of canny edge detection
+- 1. Noise Reduction
+- 2. Gradient Calculation
+- 3. Non-Maximum Supression
+- 4. Double thresholding
+- 5. Edge tracking by Hysteresis
+
+- 1. Noise Reduction
+Since edge detection is susceptible to noise in the image, first step to remove the noise in the image with a Gaussian filter.
+- 2. Gradient Calculation
+Smoothened image is then filtered with a Sobel kernel in both X and Y direction to get derivatives of Gx and Gy. 
+- 3. Non-Maximum Supression
+The final image should have thin edges. Thus, we must perform non-maximum suppression to thin out the edges. The algorithm goes through all the points on the image and finds the pixels with the maximum value of gradient in the edge direction.
+- 4. Double Thresholding
+For this step we need two threshold values, minVal and maxVal. any edge with intensity gradient more than maxVal are sure to be edges and those below minVal are non-edges. Those who lies between these two thresholds are classified edges or non-edges based on their connectivity.
+- 5. Edge tracking by Hysteresis
+If they are connected to "sure-edge" pixels, they are considered to be part of edges. Otherwise, they are also discarded.
+
+-------------------------------------------------------------------------------------------
+
+## What is morphology and Morphological Transformation?
+- Morphology is a broad set of image processing operations that process binary images based on structuring element or kernel which decides the nature of opertion.
+- In a morphological operation, each pixel in the image is adjusted based on the value of each pixels in its neighborhood.
+#### Types of morphological operations
+- 1. Dilation
+- 2. Erosion
+- 3. Opening
+- 4. Closing
+- 5. Gradient
+- 6. Top Hat
+- 7. Black Hat
+
+- Erosion Operaion
+- A pixel in the original image (either 255 or 0) will be considered 255 only if all the pixels under the kernel is 255, otherwise it is eroded (made to zero).
+
+- Dilation Operation
+- Just opposite to erosion, Here a pixel element is '255' , if atleast one pixel under the kernel is '255'
+
+- Opening Operation
+- Many times used in Noise Removal, it is operation erosion followed by dilation.
+
+- closing Operation
+- Filling patches in the foreground object mask, it is operation dilation followed by erosion.
+
+- Gradient operation.
+- To find outlines of ojects.
+
+- Top Hat
+- Difference between input image and its opening, Highlights minor details in image (only)
+
+- Black Hat
+- To find bright objects on dark background
+
+    kernel = np.ones((5,5), np.unit8)
+    or
+    cv2.getStructureingElement(cv2.MORPH_RECT, (5,5))
+    erosion = cv2.erode(img, kernel, iterations = 1)
+    dilation = cv2.dilate(img, kernel, iterations = 1)
+    opening = cv2.morphologyEx(img, cv2.MORPH_OPEN, kernel)
+    closing = cv2.morphologyEx(img, cv2.MORPH_CLOSE, kernel)
+    gradient = cv2.morphologyEx(img, cv2.MORPH_GRADIENT, kernel)
+    tophat = cv2.morphologyEx(img, cv2.MORPH_TOPHAT, kernel)
+
+------------------------------------------------------------------------------------------------
+## What is Image histogram ?
+- An image histogram is a type of histogram that reflects the intensity (tonal) distribution of the image plotting the number of pixels for each intensity value.
+
+#### What is Brightness?
+- The brightness of a grayscale image can be defined as the average intensity of all the pixels of the image. 
+
+#### Histogram Equalization
+- The cv2.equalizeHist() function is used to eqalize the image histogram which normalizes the brightness and also incres=ases the contrast of the image. 
+
+## CLAHE - Contrast Limited Adaptive Histogram
+- CLAHE solves problem of impurity maximisation by Cliping the extra values. If any histogram bin is above the specified contrast limit, those pixels are clipped and distributed unformly to other bins before applying histogram equalization.
+
+## Image segmentation
+- Image segmentation is to modify the represenation of an image into another represenation that is easier to process. For example, image segmentation is commonly used to extract objects from the background based on some properties of the object.
+
+#### Thresholding
+- Thresholding is easiest form of image segmentation based on intensity values of pixel.
+
+#### Types of thresholding
+- 1. Global Thresholding : Manual, Otsu, Triangle
+- 2. Adaptive thresholding : Mean, Gaussian, Niblack
+
+## Color based Object Tracking
+- Object tracking is a computer vision technique for locating position of objects in images or videos. or simply tracking an object in a live video.
+- Color segmentation based.
+- Frame differencing based.
+- Feature matching based.
+- Machine learning based.
+
+
+
