@@ -314,17 +314,17 @@ cv2.circle(canvas, (250,250), 10, (255,0,0), 3)
 
 - The process of detection involves detecting sharp edges in the image and producing a binary image as the output. Typically, we draw white lines on a black background to indicate those edges.
 
-#### Types of edge setection
+#### Types of edge selection
 - Sobel Edge filters (Sobal x and Sobal Y)
 - Scharr edge Filters
 - Laplacian Filters
 
 #### Sobel Edge Filter
-- The sobel operator computes an approximation od the gradient of an image intensity function. it depends on first order derivatives.
+- The sobel operator computes an approximation of the gradient of an image intensity function. it depends on first order derivatives.
 - Demerits : signal to noise ratio, not accurate results and discontinuity.
     cv2.Sobel(src, dst, ddepth, dx, dy)
 
-#### Scharr Edhe Filter
+#### Scharr Edge Filter
 - The scharr operator is belived to give better results than sobel. the scharr operator is dependent on first order derivatives.
     cv2.Scharr(src, dst, ddepth, dx, dy)
 
@@ -407,7 +407,7 @@ If they are connected to "sure-edge" pixels, they are considered to be part of e
 - The brightness of a grayscale image can be defined as the average intensity of all the pixels of the image. 
 
 #### Histogram Equalization
-- The cv2.equalizeHist() function is used to eqalize the image histogram which normalizes the brightness and also incres=ases the contrast of the image. 
+- The cv2.equalizeHist() function is used to eqalize the image histogram which normalizes the brightness and also incresases the contrast of the image. 
 
 ## CLAHE - Contrast Limited Adaptive Histogram
 - CLAHE solves problem of impurity maximisation by Cliping the extra values. If any histogram bin is above the specified contrast limit, those pixels are clipped and distributed unformly to other bins before applying histogram equalization.
@@ -429,5 +429,24 @@ If they are connected to "sure-edge" pixels, they are considered to be part of e
 - Feature matching based.
 - Machine learning based.
 
+------------------------------------------------------------------------------------------------------
 
+## Contour
+- Contour is a boundry around something that has well defined edges, so the machine is able to calculate difference in gradient, and form a recognisable shape through continuing change and draw a boundry around it.
+- Through contour detection, we can detect the outlines (border) of objects, and localize them. Many exmples of contour detection include foreground extraction, image segmentation, detection and recognition.
+
+    cv2.findCountours(img, mode, method)
+    cv2.drawCountours(img, countours, countourldx, color, thickness)
+
+#### contour Retrival modes
+- 1. Retrive External : outputs only external the countours.
+- 2. Retrive List : outputs all the contours without any hierarchy relationship.
+- 3. Retrive Tree : outputs all the contours by establishing a hierarchy relationship.
+
+#### Comparission methods
+- Detected contours can be compressed to reduce the number of points. In this sense, Opencv provides several methods to reduce the number of points. This can be set with the parameter methods.
+- CHAIN_APPROX_NONE : all boundry points are stored; no compression
+- CHAIN_APPROX_SIMPLE 
+- CHAIN_APPROX_TC89_L1
+- CHAIN_APPROX_TC89_KCOS
 
